@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NCore — Nishant Sharma</title>
+<meta name="description" content="Nishant Sharma — projects, experience and the log, opened in an editor. AI/ML engineer in Jaipur, India.">
+<meta name="theme-color" content="#0c0c0c">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/plex-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../shared/frame.css">
+<link rel="stylesheet" href="editor.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Nishant Sharma","jobTitle":"AI/ML Engineer","address":{"@type":"PostalAddress","addressLocality":"Jaipur","addressRegion":"Rajasthan","addressCountry":"IN"},"sameAs":["https://github.com/Nishant-444","https://www.linkedin.com/in/nishant-developer","https://x.com/_nishant4712"]}
+</script>
+</head>
+<body>
+<main class="stage">
+  <header class="frame-top">
+    <a class="brand" href="../" data-tip="back to the intro"><svg viewBox="0 0 88 80" aria-hidden="true"><path d="M0 80V0h14l26 46V0h14v80H40L14 34v46z"/><path d="M62 0h26v14H74v19h14v47H62V66h12V47H62z"/></svg><span class="brand-text">NCore</span></a>
+    <nav class="switch" aria-label="Elsewhere"><a href="https://github.com/Nishant-444" rel="me">github</a></nav>
+  </header>
+
+  <h1 class="sr-only">Nishant Sharma — projects, experience and the log.</h1>
+
+  <section class="editor" aria-label="Editor">
+    <button class="tabline" type="button" aria-expanded="false" aria-controls="tree"><span class="tab-dir">~/Projects</span><span class="tab-file"></span><span class="tab-toggle" aria-hidden="true">↓</span></button>
+    <nav class="wheel" id="tree" aria-label="Projects, experience and more"></nav>
+    <div class="pane">
+      <p class="winbar"></p>
+      <div class="buffer" tabindex="0" aria-live="polite"></div>
+      <div class="eye-host" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <div class="bar">
+    <p class="bar-id" aria-hidden="true"><span class="bar-title">NISHANT-SHARMA</span><span class="bar-sub"><span class="cmd"></span><span class="hunt"></span><span class="keys"></span></span></p>
+    <div class="bar-cols" aria-hidden="true"></div>
+    <div class="bar-state" aria-hidden="true">
+      <p class="col"><span class="label">WORM</span><span class="value" data-k="worm">asleep</span></p>
+      <p class="col"><span class="label">EYE</span><span class="value" data-k="eye">closed</span></p>
+      <p class="col"><span class="label">GHOST</span><span class="value" data-k="ghost">idle</span></p>
+    </div>
+    <button class="den" type="button" aria-label="worm" aria-pressed="false" data-tip="wake the worm"></button>
+    <p class="bar-graph" aria-hidden="true"><span class="label span">CONTRIBS</span><span class="value end"></span><canvas></canvas></p>
+  </div>
+  <div class="desk" aria-hidden="true"></div>
+</main>
+<canvas class="overlay" aria-hidden="true"></canvas>
+<div class="tip" hidden></div>
+<script src="../palettes.js"></script>
+<script src="../data.js"></script>
+<script src="../days.js"></script>
+<script type="module" src="editor.js"></script>
+</body>
+</html>
