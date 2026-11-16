@@ -45,5 +45,4 @@ Editor: `↑↓`/`j k` move through projects, `←→` flip screenshots, `↩` f
 The den above the sparkline wakes the worm.
 
 ## Credits
-Design and interaction modelled on hancore.dev by HANCORE-linux. All code here is a fresh implementation.
-Colorschemes are the palettes of HANCORE-linux's open-source Omarchy themes (MIT).
+Colorschemes are palettes from open-source Omarchy themes (MIT).

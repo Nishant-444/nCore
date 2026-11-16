@@ -285,7 +285,7 @@ function themesSpec() {
   return {
     cwd: "~/themes",
     blocks: [
-      { cmd: "fetch themes/", out: [fact("schemes", list.length), fact("dark", list.filter((t) => !t.light).length), fact("light", list.filter((t) => t.light).length), text("current", [currentTheme, "md-code"]), dim("palettes from the open-source Omarchy themes by HANCORE-linux (MIT)")] },
+      { cmd: "fetch themes/", out: [fact("schemes", list.length), fact("dark", list.filter((t) => !t.light).length), fact("light", list.filter((t) => t.light).length), text("current", [currentTheme, "md-code"]), dim("palettes from open-source Omarchy themes (MIT)")] },
       {
         cmd: "git log --graph themes/",
         mount(el) {
