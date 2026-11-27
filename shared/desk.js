@@ -26,7 +26,7 @@ const BONES = [[0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [7, 8], [
 const IDLE_MS = 2200;
 const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
 
-export function createDesk({ withMouse = finePointer.matches, idle = IDLE_MS, always = false } = {}) {
+export function createDesk({ withMouse = finePointer.matches, idle = IDLE_MS, always = false, sideLabels = false } = {}) {
   let kb = null;
   let hands = [];
   let box = null;
@@ -230,7 +230,11 @@ export function createDesk({ withMouse = finePointer.matches, idle = IDLE_MS, al
     g.font = `8px "Plex Mono", ui-monospace, monospace`;
     const w = g.measureText(label).width;
     g.fillStyle = `rgba(${c.ink},${(0.7 * vis).toFixed(3)})`;
-    g.fillText(label, Math.round(side === 0 ? b[0] : b[2] - w), Math.round(b[1] - 5));
+    if (sideLabels) {
+      // outside the box, level with the home row: left hand's label to its left, right hand's to its right
+      const y = Math.round(Math.max(b[1] + 8, kb.home + 3 * kb.scale));
+      g.fillText(label, Math.round(side === 0 ? b[0] - 8 - w : b[2] + 8), y);
+    } else g.fillText(label, Math.round(side === 0 ? b[0] : b[2] - w), Math.round(b[1] - 5));
   }
 
   function drawMouse(g, vis, now, c, W, H) {

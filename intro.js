@@ -40,10 +40,36 @@ const themeKey = $(".theme-key");
 const noteLine = $(".note");
 const brandLink = $(".brand");
 const switchNav = $(".switch");
+const glass = $(".kb-glass");
+
+/* frosted pane behind the keyboard + hands, sized to the desk's key extents */
+function placeGlass() {
+  if (!glass) return;
+  const kb = wall.kb && desk?.layout;
+  if (!kb) {
+    glass.style.display = "none";
+    return;
+  }
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (const k of kb.keys.values()) {
+    const half = k.wide ? k.wide / 2 : 3.6 * kb.scale;
+    lo = Math.min(lo, k.x - half);
+    hi = Math.max(hi, k.x + half);
+  }
+  // wide enough to sit under the side labels; stops a few rows above the hands' wrists
+  const x0 = Math.round(lo - 17 * CELL_W);
+  const x1 = Math.round(hi + 17 * CELL_W);
+  const y0 = Math.round(kb.top - CELL_H);
+  const y1 = Math.round(kb.bottom - 3 * CELL_H);
+  Object.assign(glass.style, { display: "block", left: `${x0}px`, top: `${y0}px`, width: `${x1 - x0}px`, height: `${y1 - y0}px` });
+}
 
 const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
 const pickGlyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-const beat = (a, b = a) => (reduced.matches ? 0 : between(a, b));
+// global pace for the ghost: every beat and keystroke runs at half its nominal length
+const TEMPO = 0.5;
+const beat = (a, b = a) => (reduced.matches ? 0 : between(a, b) * TEMPO);
 
 /* ---------------- theme ---------------- */
 const look = { theme: null, tints: {}, ink: "216,212,180", accent: "216,212,180", glow: "216,212,180", note: "168,163,133", bg: "#0c0c0c" };
@@ -220,8 +246,9 @@ function layout() {
   rows = wrapRows(logicalRows(), span[1] - 1 - span[0] - GUTTER);
   const start = prevStart;
   wall.pane = { c0: span[0], codeC0: span[0] + GUTTER, codeC1: span[1] - 1, sep: -1, start, scroll: spring(start, 0.32, 1) };
-  if (!desk) desk = createDesk({ idle: 3000 });
+  if (!desk) desk = createDesk({ idle: 3000, withMouse: false, sideLabels: true });
   if (wall.kb) desk.place(wall.kb);
+  placeGlass();
   editor.row = null;
   renderPane();
   placeStatus();
@@ -283,7 +310,10 @@ const fadeColor = (f, now) => {
 function paintRow(r, now) {
   const { ctx, cols, W } = wall;
   ctx.fillStyle = look.bg;
-  ctx.fillRect(0, r * CELL_H, W, CELL_H);
+  // snap the clear to whole device pixels: at fractional DPRs a fill of exactly CELL_H leaves a 1px antialiased sliver of whatever was drawn there
+  const dpr = ctx.getTransform().a || 1;
+  const top = Math.floor(r * CELL_H * dpr) / dpr;
+  ctx.fillRect(0, top, W, Math.ceil((r + 1) * CELL_H * dpr) / dpr - top);
   const fade = wall.fade[r];
   if (fade <= 0) return;
   ctx.font = `${FONT_PX}px "Plex Mono", ui-monospace, monospace`;
@@ -450,11 +480,11 @@ function homeCursor() {
 const press = (ch) => desk?.pressChar(ch);
 const pressKey = (code) => desk?.press(code);
 function keyDelay(ch, pace = 1) {
-  let ms = between(46, 104);
-  if (ch === " ") ms += between(10, 40);
-  if (/[^A-Za-z0-9 ]/.test(ch)) ms += between(30, 90);
-  if (Math.random() < 0.06) ms += between(120, 300);
-  return reduced.matches ? 0 : ms * pace;
+  let ms = between(38, 105);
+  if (ch === " ") ms += between(10, 110);
+  else if (!/[a-z0-9]/i.test(ch)) ms += between(20, 140);
+  if (Math.random() < 0.04) ms += between(220, 560);
+  return reduced.matches ? 0 : ms * pace * TEMPO;
 }
 function typoFor(ch) {
   if (NEAR[ch]) return NEAR[ch];
@@ -502,10 +532,10 @@ async function typeInto(r, c, chars, { alpha = 0.92, tints = null, alive, pace =
 async function blinkAt(r, c, times, alive) {
   for (let k = 0; k < times; k++) {
     placeCaret(r, c, true);
-    await sleep(beat(530));
+    await sleep(beat(380));
     if (!alive()) return false;
     placeCaret(r, c, false);
-    await sleep(beat(530));
+    await sleep(beat(260));
     if (!alive()) return false;
   }
   placeCaret(r, c, true);
@@ -561,7 +591,6 @@ async function bootView() {
   setCell(r, c, "~", 0.5, look.ink);
   setCell(r, c + 2, "›", 0.9, look.glow);
   const col = c + 4;
-  await sleep(300);
   const ok = (await blinkAt(r, col, BOOT.blinks, alive)) && (await typeInto(r, col, [...BOOT.command], { alpha: 0.92, alive, typos: 0 })) && (await blinkAt(r, col + BOOT.command.length, 1, alive));
   if (!ok || !alive()) return;
   placeCaret(r, col, false);
@@ -1376,6 +1405,8 @@ function frame(now) {
       g.translate(tile.zoom.origin[0], tile.zoom.origin[1]);
       g.scale(tile.zoom.scale, tile.zoom.scale);
       g.translate(-tile.zoom.origin[0], -tile.zoom.origin[1]);
+      // the eye (frost + glyphs) fades out as it zooms, leaving only the hole and its streaks
+      if (dive) g.globalAlpha = clamp(1 - (tile.zoom.scale - 1.2) / 2.5, 0, 1);
     }
     if (open > 0.01) {
       const f = frost(now);
@@ -1388,7 +1419,8 @@ function frame(now) {
     if (!tile.zoom) tile.eye.drawTrack(g, box, now, { ink: look.ink, accent: look.glow }, { targets: aim ? [{ x: aim[0], y: aim[1] }] : [], W: wall.W, H: wall.H });
     g.restore();
   }
-  if (wall.kb && desk) desk.draw(g, now, dt, { ink: look.ink, accent: look.glow }, wall.W, wall.H);
+  if (wall.kb && desk && !leaving) desk.draw(g, now, dt, { ink: look.ink, accent: look.glow }, wall.W, wall.H);
+  if (glass) glass.classList.toggle("is-on", Boolean(wall.kb && desk && !leaving && desk.visible > 0.05));
   flushPaint(now);
   if (dive) drawDive(g, now);
 }
@@ -1493,7 +1525,8 @@ async function leave(href) {
     const i = r * wall.cols + c;
     if (wall.chars[i] === " ") continue;
     const d = Math.hypot(cellX(c) - tile.cx, r * CELL_H - tile.cy) / reach;
-    morph(i, " ", 0, 2 + Math.round(d * 20) + ri(0, 3));
+    // scramble at the cell's current brightness so the code visibly dissolves outward from the eye
+    morph(i, " ", wall.alphas[i], 2 + Math.round(d * 20) + ri(0, 3));
   }
   await sleep(700);
   const box = tileBox();

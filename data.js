@@ -318,7 +318,7 @@ const PROJECTS = [
 
 const EXPERIENCE = [
 	{
-		when: "Oct 2026 – Present",
+		when: "Jun 2026 – Present",
 		where: "Jaipur, India",
 		role: "AI/ML Engineer",
 		org: "IterativeTech Research",
@@ -774,8 +774,9 @@ const GITHUB = {
 		from: "2025-11-09",
 		to: "2026-11-13",
 		weekly: [
-			46, 18, 26, 49, 25, 49, 44, 28, 52, 18, 13, 26, 65, 32, 15, 39, 26, 38, 24, 14, 4, 34, 16, 34, 17, 16, 22,
-			16, 13, 11, 28, 40, 43, 47, 10, 36, 87, 23, 39, 18, 18, 13, 17, 54, 18, 23, 26, 10, 26, 31, 65, 46, 32,
+			46, 18, 26, 49, 25, 49, 44, 28, 52, 18, 13, 26, 65, 32, 15, 39, 26, 38,
+			24, 14, 4, 34, 16, 34, 17, 16, 22, 16, 13, 11, 28, 40, 43, 47, 10, 36, 87,
+			23, 39, 18, 18, 13, 17, 54, 18, 23, 26, 10, 26, 31, 65, 46, 32,
 		],
 	},
 };
@@ -788,8 +789,14 @@ const SHOTS = {
 	echoinbox: ["assets/shots/echoinbox-1.webp"],
 	jobtrack: ["assets/shots/jobtrack-2.webp", "assets/shots/jobtrack-1.webp"],
 	appraisehub: ["assets/shots/appraisehub-1.webp"],
-	"trend-engine": ["assets/shots/trend-engine-1.webp", "assets/shots/trend-engine-2.webp"],
-	"modern-web-boilerplate": ["assets/shots/modern-web-boilerplate-1.webp", "assets/shots/modern-web-boilerplate-2.webp"],
+	"trend-engine": [
+		"assets/shots/trend-engine-1.webp",
+		"assets/shots/trend-engine-2.webp",
+	],
+	"modern-web-boilerplate": [
+		"assets/shots/modern-web-boilerplate-1.webp",
+		"assets/shots/modern-web-boilerplate-2.webp",
+	],
 	bankease: ["assets/shots/bankease-1.webp", "assets/shots/bankease-2.webp"],
 	portfolio: ["assets/shots/portfolio-1.webp", "assets/shots/portfolio-2.webp"],
 };
